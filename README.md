@@ -1,4 +1,4 @@
-- 👋 Hi, I’m @Satyasai955
+- 👋 Hi, I’m @Satya
 - 👀 I’m interested in artificial intelligence
 - 🌱 I’m currently learning python
 - 💞️ I’m looking to collaborate on AI projects
