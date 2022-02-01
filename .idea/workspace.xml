@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="94d71d72-14ea-49f5-8231-4b40a8c9a8ca" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/ironman mask.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.ipynb_checkpoints/practice-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/.ipynb_checkpoints/practice-checkpoint.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/practice.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/practice.ipynb" afterDir="false" />
-    </list>
+    <list default="true" id="94d71d72-14ea-49f5-8231-4b40a8c9a8ca" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
