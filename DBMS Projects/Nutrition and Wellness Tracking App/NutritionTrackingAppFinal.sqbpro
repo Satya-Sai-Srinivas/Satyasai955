@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="/Users/satyayendru/Desktop/NutritionTrackingApp.db" readonly="0" foreign_keys="1" case_sensitive_like="0" temp_store="0" wal_autocheckpoint="1000" synchronous="2"/><attached/><window><main_tabs open="structure browser pragmas query" current="0"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="100"/><column_width id="3" width="2487"/><column_width id="4" width="0"/><expanded_item id="0" parent="1"/><expanded_item id="1" parent="1"/><expanded_item id="2" parent="1"/><expanded_item id="3" parent="1"/></tab_structure><tab_browse><table title="DailyLog" custom_title="0" dock_id="1" table="4,8:mainDailyLog"/><dock_state state="000000ff00000000fd00000001000000020000000000000000fc0100000001fb000000160064006f0063006b00420072006f00770073006500310100000000ffffffff0000010100ffffff000000000000000000000004000000040000000800000008fc00000000"/><default_encoding codec=""/><browse_table_settings/></tab_browse><tab_sql><sql name="SQL 1*">SELECT User_ID, Name, Age, Gender, Height, Weight, Email, Role
+FROM User
+WHERE Email = 'john.doe@example.com';
+
+
+SELECT 
+    DL.Date AS LogDate,
+    FI.Food_Name AS FoodItem,
+    FI.Calories AS FoodCalories,
+    ED.Exercise_Type AS ExerciseType,
+    ED.Calories_Burned AS ExerciseCalories
+FROM DailyLog DL
+LEFT JOIN FoodItem FI ON DL.DailyLog_ID = FI.FK_Log_ID
+LEFT JOIN ExerciseData ED ON DL.DailyLog_ID = ED.FK_Log_ID
+WHERE DL.FK_User_ID = 1 AND DL.Date = '2024-12-12';
+
+
+SELECT 
+    R.Recommendation_Text AS Recommendation,
+    NC.Name AS CoachName,
+    U.Name AS UserName,
+    DL.Date AS LogDate
+FROM Recommendation R
+JOIN NutritionCoach NC ON R.FK_Coach_ID = NC.NutritionCoach_ID
+JOIN User U ON R.FK_User_ID = U.User_ID
+JOIN DailyLog DL ON R.FK_Log_ID = DL.DailyLog_ID
+WHERE NC.NutritionCoach_ID = 1
+ORDER BY DL.Date DESC;
+
+
+SELECT 
+    U.Name AS UserName,
+    G.Goal_Type AS GoalType,
+    G.Target_Value AS TargetValue,
+    CASE
+        WHEN G.Goal_Type = 'Weight Loss' THEN U.Weight &lt;= G.Target_Value
+        WHEN G.Goal_Type = 'Water Intake' THEN AVG(DL.Water_Intake) &gt;= G.Target_Value
+    END AS GoalMet
+FROM User U
+JOIN Goal G ON U.User_ID = G.FK_User_ID
+LEFT JOIN DailyLog DL ON U.User_ID = DL.FK_User_ID
+GROUP BY U.User_ID, G.Goal_Type;
+
+
+
+SELECT 
+    U.Name AS UserName,
+    NC.Name AS CoachName,
+    NC.Specialization AS CoachSpecialization
+FROM User U
+JOIN NutritionCoach NC ON NC.User_ID = U.User_ID
+ORDER BY U.Name;
+
+
+SELECT 
+    FI.Food_Name AS FoodItem,
+    COUNT(FI.FoodItem_ID) AS TimesConsumed,
+    ED.Exercise_Type AS ExerciseType,
+    COUNT(ED.Exercise_ID) AS TimesPerformed
+FROM FoodItem FI
+FULL JOIN ExerciseData ED ON FI.FK_Log_ID = ED.FK_Log_ID
+GROUP BY FI.Food_Name, ED.Exercise_Type
+ORDER BY TimesConsumed DESC, TimesPerformed DESC;
+
+
+</sql><sql name="SQL 2*">SELECT 
+    NC.Name AS CoachName,
+    COUNT(DISTINCT U.User_ID) AS TotalUsersAssigned,
+    COUNT(DISTINCT R.Recommendation_ID) AS TotalRecommendationsProvided,
+    AVG(CASE WHEN G.Goal_Type = 'Weight Loss' AND U.Weight &lt;= G.Target_Value THEN 1 ELSE 0 END) * 100 AS GoalAchievementRate
+FROM NutritionCoach NC
+JOIN Recommendation R ON NC.NutritionCoach_ID = R.FK_Coach_ID
+JOIN User U ON R.FK_User_ID = U.User_ID
+JOIN Goal G ON U.User_ID = G.FK_User_ID
+GROUP BY NC.Name;
+
+
+SELECT 
+    FI.Food_Name AS FoodItem,
+    COUNT(FI.FoodItem_ID) AS TimesConsumed,
+    ED.Exercise_Type AS ExerciseType,
+    COUNT(ED.Exercise_ID) AS TimesPerformed
+FROM FoodItem FI
+FULL JOIN ExerciseData ED ON FI.FK_Log_ID = ED.FK_Log_ID
+GROUP BY FI.Food_Name, ED.Exercise_Type
+ORDER BY TimesConsumed DESC, TimesPerformed DESC;
+
+SELECT 
+    COUNT(DISTINCT U.User_ID) AS ActiveUsers,
+    COUNT(DL.DailyLog_ID) AS TotalLogsCreated,
+    COUNT(FI.FoodItem_ID) AS TotalFoodItemsLogged,
+    COUNT(ED.Exercise_ID) AS TotalExerciseEntriesLogged,
+    COUNT(R.Recommendation_ID) AS TotalRecommendationsProvided
+FROM User U
+LEFT JOIN DailyLog DL ON U.User_ID = DL.FK_User_ID
+LEFT JOIN FoodItem FI ON DL.DailyLog_ID = FI.FK_Log_ID
+LEFT JOIN ExerciseData ED ON DL.DailyLog_ID = ED.FK_Log_ID
+LEFT JOIN Recommendation R ON U.User_ID = R.FK_User_ID;
+
+SELECT 
+    U.Name AS UserName,
+    AVG(DL.Water_Intake) AS AverageWaterIntake,
+    G.Target_Value AS RecommendedWaterIntake,
+    CASE 
+        WHEN AVG(DL.Water_Intake) &gt;= G.Target_Value THEN 'Goal Met'
+        ELSE 'Goal Not Met'
+    END AS HydrationStatus
+FROM User U
+JOIN Goal G ON U.User_ID = G.FK_User_ID AND G.Goal_Type = 'Water Intake'
+LEFT JOIN DailyLog DL ON U.User_ID = DL.FK_User_ID
+GROUP BY U.User_ID, G.Target_Value;
+
+
+SELECT 
+    DATE(DL.Date) AS LogDate,
+    COUNT(DL.DailyLog_ID) AS LogsCreated
+FROM DailyLog DL
+GROUP BY DATE(DL.Date)
+ORDER BY LogDate ASC;
+
+
+
+
+
+</sql><current_tab id="0"/></tab_sql></sqlb_project>
